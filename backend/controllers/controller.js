@@ -44,6 +44,7 @@ export const addClient = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+// getting all client
 export const getClientList = async (req, res) => {
     try {
         const clients = await clientdata.find();
@@ -52,3 +53,48 @@ export const getClientList = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+// delete single client
+export const deleteClient = async (req, res) => {
+    try {
+        const { id } = req.body; 
+        const client = await clientdata.findById(id);
+        if (!client) {
+            return res.status(404).json({ message: "Client not found" });
+        }
+        await client.deleteOne(); 
+        res.status(200).json({ message: "Client deleted successfully", client });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting client", error: error.message });
+    }
+};
+
+export const editClient = async (req, res) => {
+    try {
+        const { id , client , email  } = req.body; 
+        const editclient = await clientdata.findById(id);
+        if (!editclient) {
+            return res.status(404).json({ message: "Client not found" });
+        }
+        editClient.clientname=client;
+        editClient.email=email;
+       await editClient.save();
+        res.status(200).json({ message: "Client updated successfully", editclient });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating client", error: error.message });
+    }
+};
+
+export const viewClient = async (req, res) => {
+    try {
+        const { id } =  req.params; 
+        console.log(id);
+        const viewClient = await clientdata.findById(id);
+        if (!viewClient) {
+            return res.status(404).json({ message: "Client not found" });
+        }
+        res.status(200).json({ message: "Client fetched successfully", viewClient });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating client", error: error.message });
+    }
+};
+

@@ -21,7 +21,7 @@ const ClientList = () => {
             client.email.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .map((client, index) => ({
-            id: client._id || index + 1,
+            id: index + 1,
             clientname: client.clientname,
             email: client.email,
         }));
