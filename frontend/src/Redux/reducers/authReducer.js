@@ -5,6 +5,7 @@ const initialState = {
         ? JSON.parse(localStorage.getItem('userInfo')) 
         : null,
     clients: [],
+    client: null, // Separate field for single client
     loading: false,
     error: null,
     success: false,
@@ -64,6 +65,7 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
         // ADD CLIENT
         case types.CLIENT_REQUEST:
             return { 
@@ -77,7 +79,7 @@ const authReducer = (state = initialState, action) => {
             return { 
                 ...state, 
                 loading: false, 
-                userInfo: action.payload, 
+                clients: [...state.clients, action.payload], 
                 error: null,
                 success: true, 
             };
@@ -89,11 +91,12 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
-        //Client list
+
+        // Fetch all clients
         case types.FETCH_CLIENTS_REQUEST:
             return {
                 ...state,
-                loading: false,
+                loading: true, 
                 error: null,
                 success: false,
             };
@@ -101,7 +104,7 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                clients: action.payload,
+                clients: action.payload, 
                 error: null,
                 success: true,
             };
@@ -112,6 +115,55 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
+        // Fetch single client
+        case types.FETCH_CLIENT_REQUEST:
+            return {
+                ...state,
+                loading: true, 
+                error: null,
+                success: false,
+            };
+        case types.FETCH_CLIENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                client: action.payload, 
+                error: null,
+                success: true,
+            };
+        case types.FETCH_CLIENT_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                success: false,
+            };
+
+        // DELETE SINGLE CLIENT
+        case types.DELETE_CLIENT_REQUEST:
+            return {
+                ...state,
+                loading: true, 
+                error: null,
+                success: false,
+            };
+        case types.DELETE_CLIENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                clients: state.clients.filter(client => client.id !== action.payload.id), 
+                error: null,
+                success: true,
+            };
+        case types.DELETE_CLIENT_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                success: false,
+            };
+
         // LOGOUT ACTION
         case types.LOGOUT:
             localStorage.removeItem('userInfo');

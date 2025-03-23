@@ -10,5 +10,5 @@ route.get('/list',getClientList);
 // crud 
 route.get("/fetchclient/:id",viewClient);
 route.delete("/deleteclient/:id",deleteClient);
-route.put("/clientupdate/:id",editClient);
+route.put("/updateclient/:id",editClient);
 export default route;
