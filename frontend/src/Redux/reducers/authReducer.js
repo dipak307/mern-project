@@ -5,6 +5,8 @@ const initialState = {
         ? JSON.parse(localStorage.getItem('userInfo')) 
         : null,
     clients: [],
+    cartItems: [],
+    cartCount: 0,
     client: null, // Separate field for single client
     loading: false,
     error: null,
@@ -163,6 +165,16 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+        // ADD TO CART
+            case types.ADD_TO_CART:
+                return {
+                    ...state,
+                    loading: false, 
+                    // cartItems: [...state.cartItems, action.payload], 
+                    cartCount: state.cartCount + 1,
+                    error: null,
+                    success: true, 
+                }
 
         // LOGOUT ACTION
         case types.LOGOUT:

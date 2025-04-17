@@ -2,6 +2,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../model/user.js';
 import clientdata from '../model/clientdata.js';
+import imageModel from '../model/imageModel.js';
+import { Server } from "socket.io";
+import Comment from "../model/comment.js"; 
+import Razorpay from 'razorpay';
+import dotenv from "dotenv";
+import { createHmac } from "crypto";
+dotenv.config();
 
 // REGISTER USER
 export const registerUser = async (req, res) => {
@@ -67,7 +74,7 @@ export const deleteClient = async (req, res) => {
         res.status(500).json({ message: "Error deleting client", error: error.message });
     }
 };
-
+// edit single client
 export const editClient = async (req, res) => {
     try {
         const { client , email  } = req.body; 
@@ -84,7 +91,7 @@ export const editClient = async (req, res) => {
         res.status(500).json({ message: "Error updating client", error: error.message });
     }
 };
-
+// view single client
 export const viewClient = async (req, res) => {
     try {
         const { id } =  req.params; 
@@ -99,3 +106,101 @@ export const viewClient = async (req, res) => {
     }
 };
 
+// Upload image code
+export const uploadImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        const newImage = new imageModel({ imageUrl });
+        await newImage.save();
+        return res.status(200).json({ message: "Image uploaded successfully", imageUrl: newImage.imageUrl });
+    } catch (error) {
+        return res.status(500).json({ message: "Error saving image", error: error.message });
+    }
+};
+
+// socket logic
+
+export const initializeSocket = (server) => {
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST","DELETE"]
+    },
+  });
+
+  io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
+
+    socket.on("sendComment", async (commentData) => {
+      try {
+        const newComment = new Comment(commentData);
+        await newComment.save();
+        io.emit("receiveComment", newComment); // Broadcast to all clients
+      } catch (error) {
+        console.error("Error saving comment:", error);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
+  });
+
+  return io;
+};
+
+// gets all comments
+export const allComments = async (req, res) => {
+    try {
+    const comments = await Comment.find().sort({ timestamp: -1 });
+    return res.status(200).json({ message: "fetched all comments", comments: comments });
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching comments", error: error.message });
+    }
+  };
+// Initialize Razorpay
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+
+  // payment razorpay
+export  const payment=async (req, res) => {
+    const { amount, currency } = req.body;
+  
+    try {
+      const options = {
+        amount: amount * 100, 
+        currency,
+        payment_capture: 1, 
+      };
+  
+      const order = await razorpay.orders.create(options);
+      res.json(order);
+    } catch (error) {
+      res.status(500).send("Error creating Razorpay order");
+    }
+  };
+
+  // verify payment code  
+
+  export const verifyPayment = (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  
+    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expectedSignature = createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+  
+    if (expectedSignature === razorpay_signature) {
+      console.log("✅ Payment verified");
+      res.json({ success: true, message: "Payment verified successfully" });
+    } else {
+      console.log("❌ Invalid signature");
+      res.status(400).json({ success: false, message: "Invalid signature" });
+    }
+  };
+  

@@ -10,7 +10,6 @@ const Home = () => {
     const [editOpen, setEditOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const dispatch = useDispatch();
-
     const handleChange = (e) => setClient({ ...clients, [e.target.name]: e.target.value });
 
     const handleSubmit = (e) => {

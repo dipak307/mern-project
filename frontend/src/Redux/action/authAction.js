@@ -104,3 +104,10 @@ export const deleteSingleClient = (id) => async (dispatch) => {
         dispatch({ type: types.DELETE_CLIENT_FAIL, payload: error.response?.data?.message || error.message });
     }
 };
+/// COUNT PRODUCT
+export const addToCart = (product) => (dispatch) => {
+    dispatch({
+      type: types.ADD_TO_CART,
+    //   payload: product, 
+    });
+  };
