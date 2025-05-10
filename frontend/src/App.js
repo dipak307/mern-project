@@ -9,6 +9,7 @@ import Header from './components2/Header';
 import Home from './components2/Home';
 import About from './components2/About';
 import Dashboard from './components2/Dashboard';
+import CartSummary from './AddToCart';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={userInfo ? <Dashboard /> : <Navigate to="/login" />} />
       <Route path="/about" element={userInfo ? <About /> : <Navigate to="/login" />} />
+      <Route path="/cart" element={userInfo ? <CartSummary /> : <Navigate to="/login" />} />
     </Routes>
   );
 };

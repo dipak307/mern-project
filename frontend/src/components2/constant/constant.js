@@ -2,13 +2,13 @@ import { IconButton } from '@mui/material';
 import { Delete, Edit, Visibility } from '@mui/icons-material';
 
 const CLIENT_COLUMNS = [
-  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'id', headerName: 'ID', width: 100 },
   { field: 'clientname', headerName: 'Client Name', width: 200 },
-  { field: 'email', headerName: 'Email', width: 250 },
+  { field: 'email', headerName: 'Email', width: 200 },
   { 
     field: 'action', 
     headerName: 'Actions', 
-    width: 150,
+    width: 140,
     renderCell: (params) => (
       <>
         {/* View Icon */}

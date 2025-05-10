@@ -170,7 +170,7 @@ const authReducer = (state = initialState, action) => {
                 return {
                     ...state,
                     loading: false, 
-                    // cartItems: [...state.cartItems, action.payload], 
+                    cartItems: [...state.cartItems, action.payload], 
                     cartCount: state.cartCount + 1,
                     error: null,
                     success: true, 

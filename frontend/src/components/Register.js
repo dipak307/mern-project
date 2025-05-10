@@ -12,6 +12,7 @@ const Register = () => {
         username: "",
         email: "",
         password: "",
+        role:"",
     });
 
     const navigate = useNavigate();
@@ -44,7 +45,8 @@ const Register = () => {
                         Register
                     </Typography>
 
-                    {error && <Alert severity="error">{error}</Alert>}
+                    {error && <Alert severity="error">{error.message}</Alert>}
+
                     {success && <Alert severity="success">{success}</Alert>}
 
                     <form onSubmit={handleSubmit}>
@@ -76,6 +78,16 @@ const Register = () => {
                             margin="normal"
                             required
                             value={formData.password}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            label="Role"
+                            name="role"
+                            type="role"
+                            fullWidth
+                            margin="normal"
+                            required
+                            value={formData.role}
                             onChange={handleChange}
                         />
 

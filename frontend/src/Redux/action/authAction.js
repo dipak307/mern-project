@@ -108,6 +108,6 @@ export const deleteSingleClient = (id) => async (dispatch) => {
 export const addToCart = (product) => (dispatch) => {
     dispatch({
       type: types.ADD_TO_CART,
-    //   payload: product, 
+      payload: product, 
     });
   };

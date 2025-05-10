@@ -16,10 +16,10 @@ const About = () => {
     });
   }, []);
   // let count=0;
-  const handleCart=async(e)=>{
-   e.preventDefault();
-    // count=count+1;
-    dispatch(addToCart());
+  const handleCart=async(productId)=>{
+    const selectedProduct = products.find((item) => item.id === productId);
+    if (!selectedProduct) return;
+    dispatch(addToCart(selectedProduct));
   }
 
   return (
@@ -29,8 +29,8 @@ const About = () => {
           <img src={product.image} alt={product.title} style={styles.image} />
           <h3>{product.title.substring(0, 25)}...</h3>
           <p>₹{product.price}</p>
-          {/* <Payment amount={product.price}/> */}
-          <button onClick={handleCart}>Add To Cart</button>
+          <Payment amount={product.price}/>
+          <button onClick={()=>handleCart(product.id)}>Add To Cart</button>
         </div>
       ))}
     </div>

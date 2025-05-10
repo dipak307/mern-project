@@ -13,15 +13,16 @@ dotenv.config();
 // REGISTER USER
 export const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password,role } = req.body;
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ message: "User already exists" });
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = new User({ username, email, password: hashedPassword });
+        const newUser = new User({ username, email, password: hashedPassword,role });
         await newUser.save();
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
+      console.log(error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
@@ -54,8 +55,13 @@ export const addClient = async (req, res) => {
 // getting all client
 export const getClientList = async (req, res) => {
     try {
-        const clients = await clientdata.find();
-        res.status(200).json(clients);
+      const clients = await clientdata.find();
+      const updatedClients = clients.map((client, index) => ({
+        ...client._doc,    
+        count: index + 1   
+      }));
+      
+      res.status(200).json(updatedClients);
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }

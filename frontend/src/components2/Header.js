@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Badge } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../Redux/action/authAction';
@@ -15,6 +15,10 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login', { replace: true });
+  };
+  const handleCart = () => {
+    // navigate('/cart');
+    redirect("/cart");
   };
 
   return (
@@ -32,7 +36,7 @@ const Header = () => {
 
         <Button color="inherit" component={Link} to="/about">
           <Badge badgeContent={cartCount} color="error">
-            <ShoppingCartIcon />
+            <ShoppingCartIcon onClick={handleCart}/>
           </Badge>
         </Button>
 
