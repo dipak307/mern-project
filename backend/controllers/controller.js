@@ -47,6 +47,7 @@ export const addClient = async (req, res) => {
         const {client, email } = req.body;
         const newClient = new clientdata({clientname:client , email });
         await newClient.save();
+        console.log(newClient,"client");
         res.status(200).json({ message: "Client Added successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
@@ -118,8 +119,8 @@ export const uploadImage = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: "No file uploaded" });
         }
-        const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-        const newImage = new imageModel({ imageUrl });
+        // const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+        // const newImage = new imageModel({ imageUrl });
         await newImage.save();
         return res.status(200).json({ message: "Image uploaded successfully", imageUrl: newImage.imageUrl });
     } catch (error) {
