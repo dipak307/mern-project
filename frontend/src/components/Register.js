@@ -3,7 +3,7 @@ import { register } from '../Redux/action/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
     Button, TextField, Container, Typography, Alert, 
-    Card, CardContent, Link, CircularProgress 
+    Card, CardContent, Link, CircularProgress ,InputLabel,Select,MenuItem
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +22,6 @@ const Register = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(register(formData));
@@ -80,16 +79,20 @@ const Register = () => {
                             value={formData.password}
                             onChange={handleChange}
                         />
-                        <TextField
+                        <InputLabel id="role">Role</InputLabel>
+                        <Select
                             label="Role"
+                            labelId="role"
+                            id="role"
                             name="role"
-                            type="role"
                             fullWidth
-                            margin="normal"
-                            required
                             value={formData.role}
                             onChange={handleChange}
-                        />
+                        >
+                            <MenuItem value="admin">Admin</MenuItem>
+                            <MenuItem value="hr">HR</MenuItem>
+                            <MenuItem value="employee">Employee</MenuItem>
+                        </Select>
 
                         <Button
                             type="submit"

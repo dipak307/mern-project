@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../Redux/action/authAction';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-const Header = () => {
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import { IconButton, Tooltip } from '@mui/material';
+const Header = ({mode,setMode}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
@@ -22,10 +24,10 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#1976d2' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'black' }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          MyApp
+        <img src="https://www.weproinc.com/img/logo.png" alt="Logo" style={{ height: '40px' }} />
         </Typography>
         <Button color="inherit" component={Link} to="/">
           Home
@@ -43,6 +45,20 @@ const Header = () => {
         <Button color="inherit" component={Link} to="/about">
           About
         </Button>
+        <Button color="inherit" component={Link} to="/ask-boat">
+          Ask Boat
+        </Button>
+         <Button color="inherit" component={Link} to="/leave/add">
+          Leave
+        </Button>
+        <Button color="inherit" component={Link} to="/">
+          
+        </Button>
+       <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
+        <IconButton onClick={() => setMode(prev => prev === 'light' ? 'dark' : 'light')} color="inherit">
+          {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+        </IconButton>
+      </Tooltip>
 
         {userInfo?.token && (
           <Button

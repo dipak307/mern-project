@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import {
   addClient, loginUser, registerUser, getClientList,
   viewClient, deleteClient, editClient, uploadImage , allComments,
-  payment, verifyPayment
+  payment, verifyPayment,adminLoginUser,addLeave
 } from "../controllers/controller.js";
 
 const route = express.Router();
@@ -42,6 +42,7 @@ const upload = multer({ storage, fileFilter });
 
 route.get("/", (req, res) => res.send("API is running..."));
 route.post("/login", loginUser);
+route.post("/admin/login", adminLoginUser);
 route.post("/register", registerUser);
 route.post("/client", addClient);
 route.get("/list", getClientList);
@@ -52,5 +53,6 @@ route.post("/upload", upload.single("image"), uploadImage);
 route.get("/comments", allComments);
 route.post("/payment",payment);
 route.post("/payment/verify", verifyPayment);
+route.post("/leave/add", addLeave);
 
 export default route;

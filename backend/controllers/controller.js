@@ -8,6 +8,7 @@ import Comment from "../model/comment.js";
 import Razorpay from 'razorpay';
 import dotenv from "dotenv";
 import { createHmac } from "crypto";
+import Leave from '../model/leave.js';
 dotenv.config();
 
 // REGISTER USER
@@ -27,11 +28,27 @@ export const registerUser = async (req, res) => {
     }
 };
 
-// LOGIN USER
+// Hr,Employee LOGIN USER
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: "Invalid credentials" });
+        const isMatch = await bcrypt.compare(password, user.password);
+        console.log(isMatch);
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "7h" });
+        res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email },message: "User Login successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+export const adminLoginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        const admin = user.role == 'admin';
+        if(!admin) return res.status(400).json({message:"User is not Authenticated"})
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
@@ -210,4 +227,18 @@ export  const payment=async (req, res) => {
       res.status(400).json({ success: false, message: "Invalid signature" });
     }
   };
+
+  // add request 
+  export const addLeave = async (req, res) => {
+    try {
+        const {name, reason,type,status,start_date,end_date } = req.body;
+        const leave = new Leave({name, reason,type,status,start_date,end_date });
+        await leave.save();
+        res.status(200).json({ message: "Leave Added successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
   
+
+

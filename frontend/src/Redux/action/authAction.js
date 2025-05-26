@@ -35,6 +35,17 @@ export const login = (userData) => async (dispatch) => {
         dispatch({ type: types.LOGIN_FAIL, payload: error.response?.data?.message || "Login failed" });
     }
 };
+// ADMIN LOGIN 
+export const adminLogin = (userData) => async (dispatch) => {
+    try {
+        dispatch({ type: types.ADMIN_LOGIN_REQUEST });
+        const { data } = await axios.post(`${API_URL}/admin/login`, userData, getAuthHeaders());
+        dispatch({ type: types.ADMIN_LOGIN_SUCCESS, payload: data });
+        localStorage.setItem('userInfo', JSON.stringify(data));  
+    } catch (error) {
+        dispatch({ type: types.ADMIN_LOGIN_FAIL, payload: error.response?.data?.message || "Login failed" });
+    }
+};
 
 // LOGOUT
 export const logout = () => (dispatch) => {
@@ -111,3 +122,16 @@ export const addToCart = (product) => (dispatch) => {
       payload: product, 
     });
   };
+
+  // ADD LEAVE REQUEST
+  export const addLeave = (leaveData) => async (dispatch) => {
+    dispatch({ type: types.ADD_LEAVE_REQUEST });
+    try {
+        const { data } = await axios.post(`${API_URL}/leave/add`, leaveData, getAuthHeaders());  
+        dispatch({ type: types.ADD_LEAVE_SUCCESS, payload: data });
+        // update client imediatly
+        // dispatch(fetchClients());
+    } catch (error) {
+        dispatch({ type: types.ADD_LEAVE_FAIL, payload: error.response?.data?.message || error.message });
+    }
+};

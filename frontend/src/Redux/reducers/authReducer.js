@@ -6,6 +6,7 @@ const initialState = {
         : null,
     clients: [],
     cartItems: [],
+    leaveData:[],
     cartCount: 0,
     client: null, // Separate field for single client
     loading: false,
@@ -35,6 +36,31 @@ const authReducer = (state = initialState, action) => {
             };
 
         case types.LOGIN_FAIL:
+            return { 
+                ...state, 
+                loading: false, 
+                error: action.payload,
+                success: false,
+            };
+        // ADMIN LOGIN
+         case types.ADMIN_LOGIN_REQUEST:
+            return { 
+                ...state, 
+                loading: true, 
+                error: null,
+                success: false
+            };
+
+        case types.ADMIN_LOGIN_SUCCESS:
+            return { 
+                ...state, 
+                loading: false, 
+                userInfo: action.payload, 
+                error: null,
+                success: true,
+            };
+
+        case types.ADMIN_LOGIN_FAIL:
             return { 
                 ...state, 
                 loading: false, 
@@ -185,6 +211,32 @@ const authReducer = (state = initialState, action) => {
                 loading: false, 
                 error: null,
                 success: false, 
+            };
+
+        // ADD Request
+        case types.ADD_LEAVE_REQUEST:
+            return { 
+                ...state, 
+                loading: true, 
+                error: null,
+                success: false, 
+            };
+
+        case types.ADD_LEAVE_SUCCESS:
+            return { 
+                ...state, 
+                loading: false, 
+                leaveData: action.payload, 
+                error: null,
+                success: true, 
+            };
+
+        case types.ADD_LEAVE_FAIL:
+            return { 
+                ...state, 
+                loading: false, 
+                error: action.payload,
+                success: false,
             };
 
         default:
