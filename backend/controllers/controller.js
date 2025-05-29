@@ -203,4 +203,28 @@ export  const payment=async (req, res) => {
       res.status(400).json({ success: false, message: "Invalid signature" });
     }
   };
+
+  // add request 
+  export const addLeave = async (req, res) => {
+    try {
+        const {name, reason,type,status,start_date,end_date } = req.body;
+        const leave = new Leave({name, reason,type,status,start_date,end_date });
+        await leave.save();
+        res.status(200).json({ message: "Leave Added successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
+
+// fetch request
+  export const getRequestList = async (req,res)=>{
+        try{
+          const leaveList =await Leave.find({});
+          return res.status(200).json({mesage:"Leave List Fetched Successfully",data:leaveList});
+        }catch(error){
+          res.status(500).json({message:'Server Error',error:error.message});
+        }
+  }
   
+
+

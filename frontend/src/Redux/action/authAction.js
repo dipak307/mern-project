@@ -111,3 +111,26 @@ export const addToCart = (product) => (dispatch) => {
     //   payload: product, 
     });
   };
+
+  // ADD LEAVE REQUEST
+  export const addLeave = (leaveData) => async (dispatch) => {
+    dispatch({ type: types.ADD_LEAVE_REQUEST });
+    try {
+        const { data } = await axios.post(`${API_URL}/leave/add`, leaveData, getAuthHeaders());  
+        dispatch({ type: types.ADD_LEAVE_SUCCESS, payload: data });
+        // update client imediatly
+        // dispatch(fetchClients());
+    } catch (error) {
+        dispatch({ type: types.ADD_LEAVE_FAIL, payload: error.response?.data?.message || error.message });
+    }
+};
+
+    export const fetchLeaveRequest=()=>async(dispatch)=>{
+         dispatch({type:types.FETCH_LEAVE_REQUEST});
+         try {
+            const {data} = await axios.get(`${API_URL}/leave/list`,getAuthHeaders());
+            dispatch({type:types.FETCH_LEAVE_SUCCESS,payload:data});
+         } catch (error) {
+            dispatch({type: types.FETCH_LEAVE_FAIL,payload:error.response?.data?.message || error.message})
+         }
+    }

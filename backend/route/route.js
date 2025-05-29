@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import {
   addClient, loginUser, registerUser, getClientList,
   viewClient, deleteClient, editClient, uploadImage , allComments,
-  payment, verifyPayment
+  payment, verifyPayment,adminLoginUser,addLeave,getRequestList
 } from "../controllers/controller.js";
 
 const route = express.Router();
@@ -52,5 +52,7 @@ route.post("/upload", upload.single("image"), uploadImage);
 route.get("/comments", allComments);
 route.post("/payment",payment);
 route.post("/payment/verify", verifyPayment);
+route.post("/leave/add", addLeave);
+route.get("/leave/list", getRequestList);
 
 export default route;
