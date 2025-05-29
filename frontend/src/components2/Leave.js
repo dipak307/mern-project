@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -12,8 +12,10 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import { addLeave } from '../Redux/action/authAction';
-import { useDispatch } from 'react-redux';
+import { addLeave, fetchLeaveRequest } from '../Redux/action/authAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { DataGrid } from '@mui/x-data-grid';
+
 
 const Leave = () => {
   const [open, setOpen] = useState(false);
@@ -26,14 +28,17 @@ const Leave = () => {
     start_date: '',
     end_date: '',
   });
+
   const dispatch = useDispatch();
+  const { leaveData = [], loading, error } = useSelector(state => state.auth);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      dispatch(addLeave(form));
+      await dispatch(addLeave(form)); // Wait for the addLeave action to finish
       setOpen(false);
       setSuccessAlert(true);
       setForm({
@@ -43,22 +48,46 @@ const Leave = () => {
         start_date: '',
         end_date: '',
       });
+      dispatch(fetchLeaveRequest()); // Refresh the list after adding
     } catch (error) {
       console.error('Leave request failed:', error);
     }
   };
+  const handleChanges=async(id)=>{
+    
+  }
+  useEffect(() => {
+    dispatch(fetchLeaveRequest());
+  }, [dispatch]);
+
+  const CLIENT_COLUMNS = [
+  { field: 'id', headerName: 'ID', width: 100 },
+  { field: 'name', headerName: 'Name', width: 200 },
+  { field: 'reason', headerName: 'Reason', width: 200 },
+  { field: 'type', headerName: 'Type', width: 200 },
+  { 
+    field: 'action', headerName: 'Actions', width: 140,
+    renderCell: (params) => (
+       <button onClick={()=>handleChanges(params.id)}>Leave</button>
+    )
+  }
+];
 
   return (
-    <Box sx={{ textAlign: 'center', mt: 4 }}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setOpen(true)}
-        sx={{ borderRadius: '20px', px: 4, py: 1 }}
-      >
-        Request Leave
-      </Button>
+    <Box sx={{ mt: 4 }}>
+      {/* Align button to the right */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpen(true)}
+          sx={{ borderRadius: '10px', px: 4, py: 1 }}
+        >
+          Request Leave
+        </Button>
+      </Box>
 
+      {/* Dialog */}
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -139,6 +168,18 @@ const Leave = () => {
         </DialogActions>
       </Dialog>
 
+      {/* DataGrid */}
+      <Box sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={(leaveData?.data || []).map((item, index) => ({ id: item._id || index, ...item }))}
+          columns={CLIENT_COLUMNS}
+          pageSize={5}
+          rowsPerPageOptions={[5, 10, 20]}
+          loading={loading}
+        />
+      </Box>
+
+      {/* Snackbar */}
       <Snackbar
         open={successAlert}
         autoHideDuration={3000}

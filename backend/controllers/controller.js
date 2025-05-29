@@ -238,7 +238,17 @@ export  const payment=async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
-};
+  };
+
+// fetch request
+  export const getRequestList = async (req,res)=>{
+        try{
+          const leaveList =await Leave.find({});
+          return res.status(200).json({mesage:"Leave List Fetched Successfully",data:leaveList});
+        }catch(error){
+          res.status(500).json({message:'Server Error',error:error.message});
+        }
+  }
   
 
 

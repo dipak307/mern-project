@@ -238,7 +238,29 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
-
+        // Fetch leave Request
+         case types.FETCH_LEAVE_REQUEST:
+            return { 
+                ...state, 
+                loading: true, 
+                error: null,
+                success: false,
+            };
+         case types.FETCH_LEAVE_SUCCESS:
+            return { 
+                ...state, 
+                loading: false, 
+                leaveData : action.payload,
+                error: null,
+                success: true,
+            };
+        case types.FETCH_LEAVE_FAIL:
+            return { 
+                ...state, 
+                loading: false, 
+                error: action.payload,
+                success: false,
+            };
         default:
             return state;
     }
