@@ -31,6 +31,8 @@ export const login = (userData) => async (dispatch) => {
         const { data } = await axios.post(`${API_URL}/login`, userData, getAuthHeaders());
         dispatch({ type: types.LOGIN_SUCCESS, payload: data });
         localStorage.setItem('userInfo', JSON.stringify(data));  
+        localStorage.setItem('user_role',data.user.user_role);
+
     } catch (error) {
         dispatch({ type: types.LOGIN_FAIL, payload: error.response?.data?.message || "Login failed" });
     }
@@ -42,6 +44,8 @@ export const adminLogin = (userData) => async (dispatch) => {
         const { data } = await axios.post(`${API_URL}/admin/login`, userData, getAuthHeaders());
         dispatch({ type: types.ADMIN_LOGIN_SUCCESS, payload: data });
         localStorage.setItem('userInfo', JSON.stringify(data));  
+        localStorage.setItem('user_role',data.user.user_role);
+
     } catch (error) {
         dispatch({ type: types.ADMIN_LOGIN_FAIL, payload: error.response?.data?.message || "Login failed" });
     }
@@ -50,6 +54,7 @@ export const adminLogin = (userData) => async (dispatch) => {
 // LOGOUT
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo');
+      localStorage.removeItem('user_role');
     dispatch({ type: types.LOGOUT });
 };
 

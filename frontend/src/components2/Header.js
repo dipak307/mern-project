@@ -1,81 +1,108 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Badge } from '@mui/material';
-import { Link, redirect } from 'react-router-dom';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Badge,
+  IconButton,
+  Tooltip,
+  Box,
+} from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { logout } from '../Redux/action/authAction';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { IconButton, Tooltip } from '@mui/material';
-const Header = ({mode,setMode}) => {
+
+const Header = ({ mode, setMode }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth);
-  const cartCount = useSelector((state) => state.auth.cartCount);
+  const cartCount = useSelector((state) => state.auth.cartCount || 0);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login', { replace: true });
   };
-  const handleCart = () => {
-    // navigate('/cart');
-    redirect("/cart");
+
+  const handleCartClick = () => {
+    navigate('/cart');
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'black' }}>
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        <img src="https://www.weproinc.com/img/logo.png" alt="Logo" style={{ height: '40px' }} />
-        </Typography>
-        <Button color="inherit" component={Link} to="/">
-          Home
-        </Button>
-        <Button color="inherit" component={Link} to="/dashboard">
-          Dashboard
-        </Button>
+    <AppBar position="static" sx={{ backgroundColor: '#1c1c1c' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Left: Logo */}
+        <Box display="flex" alignItems="center" gap={2}>
+          <Link to="/">
+            <img
+              src="https://www.weproinc.com/img/logo.png"
+              alt="Logo"
+              style={{ height: '40px' }}
+            />
+          </Link>
+        </Box>
 
-        <Button color="inherit" component={Link} to="/about">
-          <Badge badgeContent={cartCount} color="error">
-            <ShoppingCartIcon onClick={handleCart}/>
-          </Badge>
-        </Button>
-
-        <Button color="inherit" component={Link} to="/about">
-          About
-        </Button>
-        <Button color="inherit" component={Link} to="/ask-boat">
-          Ask Boat
-        </Button>
-         <Button color="inherit" component={Link} to="/leave/add">
-          Leave
-        </Button>
-        <Button color="inherit" component={Link} to="/">
-          
-        </Button>
-       <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
-        <IconButton onClick={() => setMode(prev => prev === 'light' ? 'dark' : 'light')} color="inherit">
-          {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-        </IconButton>
-      </Tooltip>
-
-        {userInfo?.token && (
-          <Button
-            sx={{
-              backgroundColor: 'red',
-              color: 'white',
-              borderRadius: '4px',
-              ml: 2,
-              '&:hover': {
-                backgroundColor: 'pink',
-              },
-            }}
-            onClick={handleLogout}
-          >
-            Logout
+        {/* Center: Navigation Links */}
+        <Box display="flex" gap={2}>
+          <Button color="inherit" component={Link} to="/">
+            Home
           </Button>
-        )}
+          <Button color="inherit" component={Link} to="/dashboard">
+            Dashboard
+          </Button>
+          <Button color="inherit" component={Link} to="/about">
+            About
+          </Button>
+          <Button color="inherit" component={Link} to="/ask-boat">
+            Ask Boat
+          </Button>
+          <Button color="inherit" component={Link} to="/leave/add">
+            Leave
+          </Button>
+        </Box>
+
+        {/* Right: Icons and Logout */}
+        <Box display="flex" alignItems="center" gap={2}>
+          {/* Cart Icon */}
+          <Tooltip title="Cart">
+            <IconButton color="inherit" onClick={handleCartClick}>
+              <Badge badgeContent={cartCount} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+
+          {/* Theme Toggle */}
+          <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
+            <IconButton
+              onClick={() => setMode((prev) => (prev === 'light' ? 'dark' : 'light'))}
+              color="inherit"
+            >
+              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+          </Tooltip>
+
+          {/* Logout */}
+          {userInfo?.token && (
+            <Button
+              onClick={handleLogout}
+              sx={{
+                backgroundColor: '#e53935',
+                color: '#fff',
+                textTransform: 'none',
+                px: 2,
+                '&:hover': {
+                  backgroundColor: '#d32f2f',
+                },
+              }}
+            >
+              Logout
+            </Button>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

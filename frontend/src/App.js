@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Provider, useSelector } from 'react-redux';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './Redux/store';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import {
@@ -41,9 +41,12 @@ const App = () => {
 
 const AppRoutes = ({ mode, setMode }) => {
   const location = useLocation();
+
   const noHeaderRoutes = ['/login', '/admin/login', '/register'];
   const showHeader = !noHeaderRoutes.includes(location.pathname);
+
   const { userInfo } = useSelector((state) => state.auth);
+
 
   return (
     <>
@@ -56,7 +59,7 @@ const AppRoutes = ({ mode, setMode }) => {
         <Route path="/dashboard" element={userInfo ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/about" element={userInfo ? <About /> : <Navigate to="/login" />} />
         <Route path="/cart" element={userInfo ? <CartSummary /> : <Navigate to="/login" />} />
-        <Route path="/leave/add" element={userInfo ? <Leave /> : <Navigate to="/login" />} />
+        <Route path="/leave/add" element={userInfo ? <Leave  /> : <Navigate to="/login" />} />
       </Routes>
     </>
   );

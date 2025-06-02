@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
-const socket = io('http://localhost:5000'); // Change this to your backend URL
+const socket = io('http://localhost:5000'); 
 
 const CommentSection = () => {
   const [comments, setComments] = useState([]);

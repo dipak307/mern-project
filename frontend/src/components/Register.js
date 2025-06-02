@@ -17,7 +17,7 @@ const Register = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading, error, success , userInfo } = useSelector((state) => state.auth || {});
+    const { loading, error, success } = useSelector((state) => state.auth || {});
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

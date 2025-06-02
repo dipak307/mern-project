@@ -8,6 +8,7 @@ import {
   viewClient, deleteClient, editClient, uploadImage , allComments,
   payment, verifyPayment,adminLoginUser,addLeave,getRequestList
 } from "../controllers/controller.js";
+import authenticateToken from "../middleware/middleware.js";
 
 const route = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +55,6 @@ route.get("/comments", allComments);
 route.post("/payment",payment);
 route.post("/payment/verify", verifyPayment);
 route.post("/leave/add", addLeave);
-route.get("/leave/list", getRequestList);
+route.get("/leave/list",authenticateToken, getRequestList);
 
 export default route;

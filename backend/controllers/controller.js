@@ -35,10 +35,9 @@ export const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: "Invalid credentials" });
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log(isMatch);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "7h" });
-        res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email },message: "User Login successfully" });
+        res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email,user_role:user.user_role },message: "User Login successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -53,7 +52,8 @@ export const adminLoginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "7h" });
-        res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email },message: "User Login successfully" });
+       
+        res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email,user_role:user.role },message: "User Login successfullddy" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -244,7 +244,8 @@ export  const payment=async (req, res) => {
   export const getRequestList = async (req,res)=>{
         try{
           const leaveList =await Leave.find({});
-          return res.status(200).json({mesage:"Leave List Fetched Successfully",data:leaveList});
+           const user = await User.findById(req.user.id);
+          return res.status(200).json({mesage:"Leave List Fetched Successfully",data:leaveList,user:user});
         }catch(error){
           res.status(500).json({message:'Server Error',error:error.message});
         }

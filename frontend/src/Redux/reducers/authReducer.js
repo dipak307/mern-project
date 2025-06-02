@@ -4,14 +4,17 @@ const initialState = {
     userInfo: localStorage.getItem('userInfo') 
         ? JSON.parse(localStorage.getItem('userInfo')) 
         : null,
+    users: [],
     clients: [],
     cartItems: [],
-    leaveData:[],
+    leaveData: [],
     cartCount: 0,
-    client: null, // Separate field for single client
+    client: null, 
     loading: false,
     error: null,
     success: false,
+    user_role: null,
+    token: null,
 };
 
 // Authentication Reducer
@@ -42,8 +45,9 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
         // ADMIN LOGIN
-         case types.ADMIN_LOGIN_REQUEST:
+        case types.ADMIN_LOGIN_REQUEST:
             return { 
                 ...state, 
                 loading: true, 
@@ -191,16 +195,17 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
         // ADD TO CART
-            case types.ADD_TO_CART:
-                return {
-                    ...state,
-                    loading: false, 
-                    cartItems: [...state.cartItems, action.payload], 
-                    cartCount: state.cartCount + 1,
-                    error: null,
-                    success: true, 
-                }
+        case types.ADD_TO_CART:
+            return {
+                ...state,
+                loading: false, 
+                cartItems: [...state.cartItems, action.payload], 
+                cartCount: state.cartCount + 1,
+                error: null,
+                success: true, 
+            };
 
         // LOGOUT ACTION
         case types.LOGOUT:
@@ -213,7 +218,7 @@ const authReducer = (state = initialState, action) => {
                 success: false, 
             };
 
-        // ADD Request
+        // ADD LEAVE REQUEST
         case types.ADD_LEAVE_REQUEST:
             return { 
                 ...state, 
@@ -238,22 +243,25 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
         // Fetch leave Request
-         case types.FETCH_LEAVE_REQUEST:
+        case types.FETCH_LEAVE_REQUEST:
             return { 
                 ...state, 
                 loading: true, 
                 error: null,
                 success: false,
             };
-         case types.FETCH_LEAVE_SUCCESS:
+
+        case types.FETCH_LEAVE_SUCCESS:
             return { 
                 ...state, 
                 loading: false, 
-                leaveData : action.payload,
+                leaveData: action.payload,
                 error: null,
                 success: true,
             };
+
         case types.FETCH_LEAVE_FAIL:
             return { 
                 ...state, 
@@ -261,6 +269,7 @@ const authReducer = (state = initialState, action) => {
                 error: action.payload,
                 success: false,
             };
+
         default:
             return state;
     }
