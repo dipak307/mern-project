@@ -100,7 +100,7 @@ const Leave = () => {
             variant="contained"
             color="primary"
             onClick={() => setOpen(true)}
-            sx={{ borderRadius: 2 }}
+            sx={{ borderRadius: 2 ,textTransform:'capitalize'}}
           >
             Request Leave
           </Button>
@@ -122,9 +122,14 @@ const Leave = () => {
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6" fontWeight="bold" textAlign="center">
-            Request Leave
-          </Typography>
+         <Typography
+          variant="h6"
+          fontWeight="bold"
+          textAlign="center"
+          sx={{ textTransform: 'capitalize' }}
+        >
+          Request Leave
+        </Typography>
         </DialogTitle>
 
         <DialogContent>

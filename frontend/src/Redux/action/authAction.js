@@ -150,3 +150,8 @@ export const addToCart = (product) => (dispatch) => {
             dispatch({type: types.FETCH_LEAVE_FAIL,payload:error.response?.data?.message || error.message})
          }
     }
+
+    // clear auth 
+    export const clearAuth = () => (dispatch) => {
+        dispatch({ type: 'CLEAR_AUTH' });
+    };

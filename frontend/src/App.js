@@ -1,11 +1,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './Redux/store';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
 import {
   ThemeProvider,
   createTheme,
   CssBaseline,
+  Box,
 } from '@mui/material';
 
 import Login from './components/Login';
@@ -21,18 +28,31 @@ import Leave from './components2/Leave';
 const App = () => {
   const [mode, setMode] = useState('light');
 
-  const theme = useMemo(() => createTheme({
-    palette: {
-      mode,
-    },
-  }), [mode]);
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-          <AppRoutes mode={mode} setMode={setMode} />
+          <Box
+            sx={{
+              minHeight: '100vh',
+              background: 'linear-gradient(135deg,rgb(88, 148, 191),rgb(64, 139, 201))', 
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <AppRoutes mode={mode} setMode={setMode} />
+          </Box>
         </Router>
       </ThemeProvider>
     </Provider>
@@ -41,12 +61,9 @@ const App = () => {
 
 const AppRoutes = ({ mode, setMode }) => {
   const location = useLocation();
-
   const noHeaderRoutes = ['/login', '/admin/login', '/register'];
   const showHeader = !noHeaderRoutes.includes(location.pathname);
-
   const { userInfo } = useSelector((state) => state.auth);
-
 
   return (
     <>
@@ -59,7 +76,7 @@ const AppRoutes = ({ mode, setMode }) => {
         <Route path="/dashboard" element={userInfo ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/about" element={userInfo ? <About /> : <Navigate to="/login" />} />
         <Route path="/cart" element={userInfo ? <CartSummary /> : <Navigate to="/login" />} />
-        <Route path="/leave/add" element={userInfo ? <Leave  /> : <Navigate to="/login" />} />
+        <Route path="/leave/add" element={userInfo ? <Leave /> : <Navigate to="/login" />} />
       </Routes>
     </>
   );

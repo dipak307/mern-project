@@ -9,6 +9,7 @@ import {
   payment, verifyPayment,adminLoginUser,addLeave,getRequestList
 } from "../controllers/controller.js";
 import authenticateToken from "../middleware/middleware.js";
+import User from "../model/user.js";
 
 const route = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -42,6 +43,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, fileFilter });
 
 route.get("/", (req, res) => res.send("API is running..."));
+//get me api
+route.get('/me', authenticateToken, async (req, res) => {
+    try{
+      const user = await User.findById(req.user.id).select('username role');
+      // -password except password
+       if(!user){
+        return  res.status(404).json({ message: 'User not found.' });
+       }
+       res.status(200).json(user);
+      }catch(err){
+        res.status(500).json({message: 'Server error.', error: err.message
+        })
+      }
+}); 
 route.post("/login", loginUser);
 route.post("/admin/login", adminLoginUser);
 route.post("/register", registerUser);

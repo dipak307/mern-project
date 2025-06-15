@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardMedia,
+  Grid,
+  Input,
+} from "@mui/material";
 import imageCompression from "browser-image-compression";
 import API from "../api";
 import CommentSection from "./CommentSection";
 
-const Dashboard = () => {
+const   Dashboard = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [imageList, setImageList] = useState([]);
 
-  // Cleanup function to revoke object URL
   useEffect(() => {
     return () => {
       if (imageUrl) URL.revokeObjectURL(imageUrl);
@@ -50,7 +58,7 @@ const Dashboard = () => {
       });
 
       if (response.status === 200) {
-        setImageList([...imageList, response.data]); 
+        setImageList((prev) => [...prev, response.data]);
         alert("Image uploaded successfully!");
       } else {
         console.error("Error uploading image:", response.data.message);
@@ -61,29 +69,60 @@ const Dashboard = () => {
   };
 
   return (
-    <>
-    <div>
-      <h1>Dashboard Page</h1>
-      <div>
-        <input type="file" onChange={handleFileChange} />
-        <button onClick={handleUpload}>Upload</button>
-        {imageUrl && <img src={imageUrl} alt="Uploaded" style={{ width: "200px" }} />}
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
 
-        <h3>Uploaded Images:</h3>
-        <div>
-          {imageList.map((img, index) => (
-            <img
-            key={index}
-            src={img.imageUrl}
-            alt="Uploaded"
-            style={{ width: "100px", margin: "5px" }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-    <CommentSection/>
-  </>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          flexWrap: "wrap",
+          mb: 3,
+        }}
+      >
+        <Input type="file" onChange={handleFileChange} />
+        <Button variant="contained" color="primary" onClick={handleUpload}>
+          Upload
+        </Button>
+      </Box>
+
+      {imageUrl && (
+        <Card sx={{ maxWidth: 200, mb: 3 }}>
+          <CardMedia
+            component="img"
+            height="140"
+            image={imageUrl}
+            alt="Preview"
+          />
+        </Card>
+      )}
+
+      <Typography variant="h6" gutterBottom>
+        Uploaded Images
+      </Typography>
+
+      <Grid container spacing={2}>
+        {imageList.map((img, index) => (
+          <Grid item key={index} xs={6} sm={4} md={3}>
+            <Card>
+              <CardMedia
+                component="img"
+                height="120"
+                image={img.imageUrl}
+                alt={`Uploaded-${index}`}
+              />
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Box mt={5}>
+        <CommentSection />
+      </Box>
+    </Box>
   );
 };
 

@@ -270,6 +270,15 @@ const authReducer = (state = initialState, action) => {
                 success: false,
             };
 
+        case 'CLEAR_AUTH':
+            return {
+                ...state,
+                success: false,
+                error: null,
+                userInfo: null, 
+            };
+
+
         default:
             return state;
     }

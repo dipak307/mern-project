@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../Redux/action/authAction';
-import { Button, TextField, Container, Typography, Alert, Card, CardContent, Link, CircularProgress } from '@mui/material';
+import { GetMe } from '../services/GetMe';
 import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Alert,
+  CircularProgress,
+  Link,
+  Box,
+} from '@mui/material';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const { loading, error, success, userInfo } = useSelector((state) => state.auth);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,27 +30,64 @@ const Login = () => {
     e.preventDefault();
     dispatch(login(formData));
   };
+
+  const fetchUser = async () => {
+    try {
+      const me = await GetMe();
+      setUser(me);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     if (success && userInfo) {
       navigate('/', { replace: true });
+      fetchUser();
     }
   }, [success, userInfo, navigate]);
 
   return (
-    <Container maxWidth="xs" sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <Card sx={{ p: 3, boxShadow: 3, maxWidth: "100%", width: 400 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to right, #667eea, #764ba2)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
+      }}
+    >
+      <Card
+        sx={{
+          p: 4,
+          width: '100%',
+          maxWidth: 420,
+          boxShadow: 10,
+          borderRadius: 3,
+          backdropFilter: 'blur(5px)',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+        }}
+      >
         <CardContent>
-          <Typography variant="h5" textAlign="center" gutterBottom>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: 600, color: '#333' }}
+          >
             Login
           </Typography>
-          {error && <Alert severity="error">{error}</Alert>}
-          {success && <Alert severity="success">Login Successful! Redirecting...</Alert>}
+
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {success && <Alert severity="success" sx={{ mb: 2 }}>Login Successful! Redirecting...</Alert>}
 
           <form onSubmit={handleSubmit}>
             <TextField
-              label="Email"
+              label="Email Address"
               name="email"
               type="email"
+              variant="outlined"
               fullWidth
               margin="normal"
               required
@@ -47,6 +97,7 @@ const Login = () => {
               label="Password"
               name="password"
               type="password"
+              variant="outlined"
               fullWidth
               margin="normal"
               required
@@ -56,28 +107,40 @@ const Login = () => {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               fullWidth
-              sx={{ mt: 2 }}
               disabled={loading}
+              sx={{
+                mt: 3,
+                backgroundColor: '#4f46e5',
+                textTransform: 'none',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                '&:hover': {
+                  backgroundColor: '#4338ca',
+                },
+              }}
             >
-              {loading ? <CircularProgress size={24} /> : 'Login'}
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
             </Button>
 
-            <Typography textAlign="center" sx={{ mt: 2 }}>
-              <Link href="/forgot-password" underline="hover">
+            <Box mt={3} textAlign="center">
+              <Link href="/forgot-password" underline="hover" color="primary">
                 Forgot Password?
               </Link>
-            </Typography>
-            <Typography textAlign="center" sx={{ mt: 2 }}>
-              <Link href="/register" underline="hover">
-                Don't have an account? Register
-              </Link>
-            </Typography>
+            </Box>
+
+            <Box mt={2} textAlign="center">
+              <Typography variant="body2">
+                Don't have an account?{' '}
+                <Link href="/register" underline="hover" color="primary">
+                  Sign Up
+                </Link>
+              </Typography>
+            </Box>
           </form>
         </CardContent>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
