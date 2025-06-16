@@ -19,13 +19,14 @@ const About = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get("https://fakestoreapi.com/products?limit=6").then((res) => {
+    axios.get("https://fakestoreapi.com/products?limit=10").then((res) => {
       setProducts(res.data);
     });
   }, []);
 
   const handleCart = (productId) => {
     const selectedProduct = products.find((item) => item.id === productId);
+    console.log(selectedProduct,"selected_product")
     if (!selectedProduct) return;
     dispatch(addToCart(selectedProduct));
   };
@@ -87,7 +88,6 @@ const About = () => {
                   pb: 2,
                 }}
               >
-                <Payment amount={product.price} />
                 <Button
                   variant="contained"
                   color="primary"

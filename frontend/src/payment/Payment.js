@@ -43,7 +43,7 @@ const Payment = ({ amount }) => {
         prefill: {
           name: "John Doe",
           email: "john@example.com",
-          contact: "9876543210",
+          contact: "8669512928",
         },
         notes: {
           address: "Razorpay Corporate Office",
@@ -66,7 +66,7 @@ const Payment = ({ amount }) => {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ padding: "1rem" }}>
       <h2>Make a Payment</h2>
       <button onClick={handlePayment} style={{color:"#fff",background:"green",cursor:"pointer"}}>Pay ₹{amount} via UPI / Card</button>
     </div>

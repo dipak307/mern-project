@@ -9,7 +9,6 @@ import {
   Alert,
   Card,
   CardContent,
-  Link,
   CircularProgress,
   Select,
   MenuItem,
@@ -17,7 +16,7 @@ import {
   FormControl,
   Box,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,NavLink as Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -150,9 +149,9 @@ const Register = () => {
             <Box mt={3} textAlign="center">
               <Typography variant="body2">
                 Already have an account?{' '}
-                <Link href="/login" underline="hover" color="primary">
-                  Login
-                </Link>
+                  <Link  to="/login" color="primary">
+                    Login
+                  </Link>
               </Typography>
             </Box>
           </form>

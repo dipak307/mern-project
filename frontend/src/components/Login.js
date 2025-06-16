@@ -12,10 +12,9 @@ import {
   CardContent,
   Alert,
   CircularProgress,
-  Link,
   Box,
 } from '@mui/material';
-
+import {Link} from 'react-router-dom';
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [user, setUser] = useState(null);
@@ -124,7 +123,7 @@ const Login = () => {
             </Button>
 
             <Box mt={3} textAlign="center">
-              <Link href="/forgot-password" underline="hover" color="primary">
+              <Link to="/forgot-password" underline="hover" color="primary">
                 Forgot Password?
               </Link>
             </Box>
@@ -132,7 +131,7 @@ const Login = () => {
             <Box mt={2} textAlign="center">
               <Typography variant="body2">
                 Don't have an account?{' '}
-                <Link href="/register" underline="hover" color="primary">
+                <Link to="/register" underline="hover" color="primary">
                   Sign Up
                 </Link>
               </Typography>

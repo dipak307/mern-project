@@ -120,26 +120,26 @@ export const deleteSingleClient = (id) => async (dispatch) => {
         dispatch({ type: types.DELETE_CLIENT_FAIL, payload: error.response?.data?.message || error.message });
     }
 };
-/// COUNT PRODUCT
-export const addToCart = (product) => (dispatch) => {
-    dispatch({
-      type: types.ADD_TO_CART,
-      payload: product, 
-    });
-  };
+    /// Count Product
 
-  // ADD LEAVE REQUEST
+    export const addToCart = (product) => (dispatch) => {
+        dispatch({
+            type: types.ADD_TO_CART,
+            payload: product, 
+        });
+    };
+
+  // Add Leave Request
   export const addLeave = (leaveData) => async (dispatch) => {
     dispatch({ type: types.ADD_LEAVE_REQUEST });
-    try {
-        const { data } = await axios.post(`${API_URL}/leave/add`, leaveData, getAuthHeaders());  
-        dispatch({ type: types.ADD_LEAVE_SUCCESS, payload: data });
-        // update client imediatly
-        // dispatch(fetchClients());
-    } catch (error) {
-        dispatch({ type: types.ADD_LEAVE_FAIL, payload: error.response?.data?.message || error.message });
-    }
-};
+        try {
+            const { data } = await axios.post(`${API_URL}/leave/add`, leaveData, getAuthHeaders());  
+            dispatch({ type: types.ADD_LEAVE_SUCCESS, payload: data });
+            // dispatch(fetchClients());
+        } catch (error) {
+            dispatch({ type: types.ADD_LEAVE_FAIL, payload: error.response?.data?.message || error.message });
+        }
+    };
 
     export const fetchLeaveRequest=()=>async(dispatch)=>{
          dispatch({type:types.FETCH_LEAVE_REQUEST});
