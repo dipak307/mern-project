@@ -38,7 +38,7 @@ const Header = ({ mode, setMode }) => {
         <Box display="flex" alignItems="center" gap={2}>
           <Link to="/">
             <img
-              src="https://www.weproinc.com/weprologo.png"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrqqWhUw9HJtut_NqVEbHUiZ_KS80N4vgeRw&s"
               alt="Logo"
               style={{ height: '40px' }}
             />

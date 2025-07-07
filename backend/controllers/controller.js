@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../model/user.js';
-import clientdata from '../model/clientdata.js';
+import Employee from '../model/clientdata.js';
 import imageModel from '../model/imageModel.js';
 import { Server } from "socket.io";
 import Comment from "../model/comment.js"; 
@@ -9,7 +9,19 @@ import Razorpay from 'razorpay';
 import dotenv from "dotenv";
 import { createHmac } from "crypto";
 import Leave from '../model/leave.js';
+import SystemInfoService from '../services/SystemInfoService.js';
+import Log from '../model/log.js';
 dotenv.config();
+
+
+  // const infoService = new SystemInfoService(req);
+  // const os = infoService.getOS();
+  // const browser = infoService.getBrowser();
+  //  const ip =
+  //   req.headers['x-forwarded-for']?.split(',')[0] ||
+  //   req.connection?.remoteAddress ||
+  //   req.socket?.remoteAddress ||
+  //   req.connection?.socket?.remoteAddress;
 
 // REGISTER USER
 export const registerUser = async (req, res) => {
@@ -38,7 +50,7 @@ export const loginUser = async (req, res) => {
         if(admin) return res.status(400).json({message:"User is not Authenticated"})
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "2h" });
+        const token = jwt.sign({ id: user._id ,role: user.role }, process.env.JWT_SECRET_KEY, { expiresIn: "2h" });
         res.status(200).json({ token, user: { id: user._id, username: user.username, email: user.email,user_role:user.user_role },message: "User Login successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
@@ -62,15 +74,41 @@ export const adminLoginUser = async (req, res) => {
 };
 // add client
 export const addClient = async (req, res) => {
-    try {
-        const {client, email } = req.body;
-        const newClient = new clientdata({clientname:client , email });
-        await newClient.save();
-        console.log(newClient,"client");
-        res.status(200).json({ message: "Client Added successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
+  try {
+    const { name, email, mobile, salary, address } = req.body;
+
+    // Create a new Employee
+    const newEmployee = new Employee({
+      name,
+      email,
+      mobile,
+      salary,
+      address,
+    });
+    await newEmployee.save();
+    // Fetch current user for logs
+    const user = await User.findById(req.user.id);
+    // Get system info
+    const infoService = new SystemInfoService(req);
+    const os = infoService.getOS();
+    const browser = infoService.getBrowser();
+    const ip =
+      req.connection?.remoteAddress ||
+      req.headers['x-forwarded-for']?.split(',')[0] ||
+      req.socket?.remoteAddress ||
+      req.connection?.socket?.remoteAddress;
+    const logs = new Log();
+    logs.os = os;
+    logs.browser = browser;
+    logs.ip_address = ip;
+    logs.action = "add employee";
+    logs.description = `User ${user.username} (${user.role}) added a new employee`;
+    await logs.save();
+    res.status(200).json({ message: "Employee added successfully" });
+  } catch (error) {
+    console.error("Error adding employee:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
 // getting all client
 export const getClientList = async (req, res) => {

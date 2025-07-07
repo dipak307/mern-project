@@ -1,10 +1,18 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-    clientname: { type: String, required: true },
+const employeeSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    // imageUrl: { type: String, required: true },
-}, { timestamps: true });
+    mobile: { type: String, required: true },
+    salary: { type: Number, required: true },
+    address: { type: String, required: true },
+    // You can optionally add an image URL field later if needed
+    // imageUrl: { type: String }
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model('ClientData', userSchema);
+export default mongoose.model('Employee', employeeSchema);
+
 

@@ -60,7 +60,7 @@ route.get('/me', authenticateToken, async (req, res) => {
 route.post("/login", loginUser);
 route.post("/admin/login", adminLoginUser);
 route.post("/register", registerUser);
-route.post("/client", addClient);
+route.post("/client",authenticateToken, addClient);
 route.get("/list", getClientList);
 route.get("/fetchclient/:id", viewClient);
 route.delete("/deleteclient/:id", deleteClient);
