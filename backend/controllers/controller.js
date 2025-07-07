@@ -113,7 +113,7 @@ export const addClient = async (req, res) => {
 // getting all client
 export const getClientList = async (req, res) => {
     try {
-      const clients = await clientdata.find();
+      const clients = await Employee.find();
       const updatedClients = clients.map((client, index) => ({
         ...client._doc,    
         count: index + 1   

@@ -3,8 +3,11 @@ import { Delete, Edit, Visibility } from '@mui/icons-material';
 
 const CLIENT_COLUMNS = [
   { field: 'id', headerName: 'ID', width: 100 },
-  { field: 'clientname', headerName: 'Client Name', width: 200 },
+  { field: 'name', headerName: 'Employee Name', width: 200 },
   { field: 'email', headerName: 'Email', width: 200 },
+  { field: 'salary', headerName: 'Salary', width: 200 },
+  { field: 'mobile', headerName: 'Mobile', width: 200 },
+  { field: 'address', headerName: 'Address', width: 200 },
   { 
     field: 'action', 
     headerName: 'Actions', 

@@ -26,15 +26,18 @@ const ClientList = ({handleEdit}) => {
         }
     };
 
-    const filteredRows = clients
+    const  filteredRows = clients
         .filter(client =>
             client.clientname?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             client.email?.toLowerCase().includes(searchQuery.toLowerCase())
         )
         .map((client, index) => ({
             id: client._id || index + 1, 
-            clientname: client.clientname,
+            name: client.name,
             email: client.email,
+            mobile:client.mobile,
+            salary:client.salary,
+            address:client.address,
         }));
     // CLIENT_COLUMNS with action handlers
     const columnsWithHandlers = CLIENT_COLUMNS.map(column => {
@@ -62,12 +65,12 @@ const ClientList = ({handleEdit}) => {
     return (
         <Container sx={{ mt: 4, width: "80%", mx: "auto" }}>
             <Typography variant="h5" textAlign="center" gutterBottom>
-                Client List
+                Employee List
             </Typography>
 
             {/* Search Bar */}
             <TextField
-                label="Search Clients"
+                label="Search Employee"
                 variant="outlined"
                 fullWidth
                 margin="normal"

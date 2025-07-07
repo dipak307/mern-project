@@ -13,6 +13,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import toast, { Toaster } from 'react-hot-toast';
 import { addClient, updateSingleClient } from '../Redux/action/authAction';
 import ClientList from './ListShow';
 import EditPopup from '../popup/EditPopup';
@@ -87,6 +88,11 @@ const Home = () => {
       });
       setErrors({});
       setOpenDialog(false);
+
+      // Show notifier
+      toast.success('Employee added successfully!', {
+        position: 'top-right',
+      });
     }
   };
 
@@ -102,6 +108,8 @@ const Home = () => {
 
   return (
     <>
+      <Toaster /> {/* Place this at root level so it works globally */}
+
       <Container maxWidth="md" sx={{ mt: 5 }}>
         <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
           Office Management
@@ -176,7 +184,6 @@ const Home = () => {
           sx: {
             borderRadius: 3,
             p: 2,
-            // background: 'linear-gradient(135deg, #ffffff, #e3f2fd)',
           },
         }}
       >
