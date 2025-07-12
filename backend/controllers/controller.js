@@ -291,5 +291,17 @@ export  const payment=async (req, res) => {
         }
   }
   
+   // add request 
+  export const reviewRequest = async (req, res) => {
+    try {
+        const {status,message,id } = req.body;
+        const review =await Leave.findById(id);
+        review.status = status;
+        await review.save();
+        res.status(200).json({ message: "Reviewed successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
 
 

@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import {
   addClient, loginUser, registerUser, getClientList,
   viewClient, deleteClient, editClient, uploadImage , allComments,
-  payment, verifyPayment,adminLoginUser,addLeave,getRequestList
+  payment, verifyPayment,adminLoginUser,addLeave,getRequestList,reviewRequest
 } from "../controllers/controller.js";
 import authenticateToken from "../middleware/middleware.js";
 import User from "../model/user.js";
@@ -70,6 +70,7 @@ route.get("/comments", allComments);
 route.post("/payment",payment);
 route.post("/payment/verify", verifyPayment);
 route.post("/leave/add", addLeave);
+route.post("/leave/review", reviewRequest);
 route.get("/leave/list",authenticateToken, getRequestList);
 
 export default route;

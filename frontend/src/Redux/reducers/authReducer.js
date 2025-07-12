@@ -8,6 +8,7 @@ const initialState = {
     clients: [],
     cartItems: [],
     leaveData: [],
+    reviewData: [],
     cartCount: 0,
     client: null, 
     loading: false,
@@ -263,6 +264,32 @@ const authReducer = (state = initialState, action) => {
             };
 
         case types.FETCH_LEAVE_FAIL:
+            return { 
+                ...state, 
+                loading: false, 
+                error: action.payload,
+                success: false,
+            };
+
+          // ADD LEAVE REQUEST
+        case types.REVIEW_LEAVE_REQUEST:
+            return { 
+                ...state, 
+                loading: true, 
+                error: null,
+                success: false, 
+            };
+
+        case types.REVIEW_LEAVE_SUCCESS:
+            return { 
+                ...state, 
+                loading: false, 
+                reviewData: action.payload, 
+                error: null,
+                success: true, 
+            };
+
+        case types.REVIEW_LEAVE_FAIL:
             return { 
                 ...state, 
                 loading: false, 

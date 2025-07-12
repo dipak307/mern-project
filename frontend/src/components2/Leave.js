@@ -13,14 +13,17 @@ import {
   Alert,
   Paper,
   Tooltip,
+  Chip
 } from '@mui/material';
-import { addLeave, fetchLeaveRequest } from '../Redux/action/authAction';
+import { addLeave, fetchLeaveRequest, reviewRequest } from '../Redux/action/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
 
 const Leave = () => {
   const [open, setOpen] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
+  const [openPop, setopenPop] = useState(false);
+
   const dispatch = useDispatch();
   const { leaveData = {}, loading } = useSelector(state => state.auth);
 
@@ -32,8 +35,35 @@ const Leave = () => {
     end_date: '',
   });
 
+  const [datareview, setDataReview] = useState({
+    id: null,
+    status: '',
+    message: '',
+  });
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleChange2 = (e) => {
+    setDataReview({ ...datareview, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit2 = (e) => {
+    e.preventDefault();
+    try {
+      dispatch(reviewRequest(datareview));
+      setopenPop(false);
+      setSuccessAlert(true);
+      setDataReview({
+        id: null,
+        status: '',
+        message: '',
+      });
+      dispatch(fetchLeaveRequest());
+    } catch (error) {
+      console.error('Review Leave failed:', error);
+    }
   };
 
   const handleSubmit = async () => {
@@ -55,8 +85,12 @@ const Leave = () => {
   };
 
   const handleActionClick = (id) => {
-    console.log('Clicked Leave on ID:', id);
-    // Add approve/reject logic here
+    setDataReview({
+      id: id,
+      status: '',
+      message: '',
+    });
+    setopenPop(true);
   };
 
   useEffect(() => {
@@ -64,28 +98,48 @@ const Leave = () => {
   }, [dispatch]);
 
   const COLUMNS = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'reason', headerName: 'Reason', width: 200 },
+    { field: 'id', headerName: 'ID', width: 200 },
+    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'reason', headerName: 'Reason', width: 250 },
     { field: 'type', headerName: 'Type', width: 180 },
+   {
+  field: 'status',
+  headerName: 'Status',
+  width: 200,
+  renderCell: (params) => {
+    let color = 'default';
+    if (params.value === 'approved') {
+      color = 'success';
+    } else if (params.value === 'rejected') {
+      color = 'error';
+    } else if (params.value === 'pending') {
+      color = 'warning';
+    }
+
+    return <Chip label={params.value} color={color} sx={{ textTransform: 'capitalize' }} />;
+  },
+},
     ...(leaveData?.user?.role === 'admin'
-      ? [{
-          field: 'action',
-          headerName: 'Actions',
-          width: 140,
-          renderCell: (params) => (
-            <Tooltip title="Approve or Reject">
-              <Button
-                size="small"
-                variant="outlined"
-                color="secondary"
-                onClick={() => handleActionClick(params.id)}
-              >
-                Review
-              </Button>
-            </Tooltip>
-          ),
-        }]
+      ? [
+          {
+            field: 'action',
+            headerName: 'Actions',
+            width: 140,
+            renderCell: (params) => (
+              <Tooltip title="Approve or Reject">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleActionClick(params.id)}
+                  sx={{ textTransform: 'capitalize' }}
+                >
+                  Review
+                </Button>
+              </Tooltip>
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -100,7 +154,7 @@ const Leave = () => {
             variant="contained"
             color="primary"
             onClick={() => setOpen(true)}
-            sx={{ borderRadius: 2 ,textTransform:'capitalize'}}
+            sx={{ borderRadius: 2, textTransform: 'capitalize' }}
           >
             Request Leave
           </Button>
@@ -120,16 +174,17 @@ const Leave = () => {
         />
       </Paper>
 
+      {/* Leave Request Form Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>
-         <Typography
-          variant="h6"
-          fontWeight="bold"
-          textAlign="center"
-          sx={{ textTransform: 'capitalize' }}
-        >
-          Request Leave
-        </Typography>
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            textAlign="center"
+            sx={{ textTransform: 'capitalize' }}
+          >
+            Request Leave
+          </Typography>
         </DialogTitle>
 
         <DialogContent>
@@ -193,6 +248,49 @@ const Leave = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Review Request Dialog */}
+      <Dialog open={openPop} onClose={() => setopenPop(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Review or Mark</DialogTitle>
+        <form onSubmit={handleSubmit2}>
+          <DialogContent dividers>
+            <TextField
+              label="Message"
+              name="message"
+              variant="outlined"
+              value={datareview.message}
+              onChange={handleChange2}
+              required
+              multiline
+              rows={3}
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              select
+              label="Status"
+              name="status"
+              value={datareview.status}
+              onChange={handleChange2}
+              required
+              fullWidth
+              margin="normal"
+            >
+              <MenuItem value="approved">Approved</MenuItem>
+              <MenuItem value="rejected">Rejected</MenuItem>
+            </TextField>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setopenPop(false)} variant="outlined">
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
       <Snackbar
         open={successAlert}
         autoHideDuration={3000}
@@ -200,7 +298,7 @@ const Leave = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert severity="success" variant="filled" onClose={() => setSuccessAlert(false)}>
-          Leave request submitted successfully!
+          Action completed successfully!
         </Alert>
       </Snackbar>
     </Box>

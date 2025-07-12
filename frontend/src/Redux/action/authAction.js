@@ -155,3 +155,15 @@ export const deleteSingleClient = (id) => async (dispatch) => {
     export const clearAuth = () => (dispatch) => {
         dispatch({ type: 'CLEAR_AUTH' });
     };
+
+    // Add Leave Request
+  export const reviewRequest = (leaveData) => async (dispatch) => {
+    dispatch({ type: types.REVIEW_LEAVE_REQUEST });
+        try {
+            const { data } = await axios.post(`${API_URL}/leave/review`, leaveData, getAuthHeaders());  
+            dispatch({ type: types.REVIEW_LEAVE_SUCCESS, payload: data });
+            // dispatch(fetchClients());
+        } catch (error) {
+            dispatch({ type: types.REVIEW_LEAVE_FAIL, payload: error.response?.data?.message || error.message });
+        }
+    };
